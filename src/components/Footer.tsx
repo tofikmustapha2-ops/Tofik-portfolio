@@ -1,5 +1,6 @@
 import React from 'react';
 import { ArrowUp, Sparkles, MapPin, Heart } from 'lucide-react';
+import { logoImg } from '../data/portfolioData';
 
 interface FooterProps {
   onNavigate: (sectionId: string) => void;
@@ -19,14 +20,19 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
           {/* Brand Info */}
           <div className="md:col-span-6 space-y-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center font-display font-extrabold text-slate-950 text-xl shadow-md">
-                A
+              <div className="w-12 h-12 rounded-xl bg-slate-900 border border-emerald-500/30 overflow-hidden shadow-md p-0.5">
+                <img
+                  src={logoImg}
+                  alt="ALOLO STUDIO Logo"
+                  className="w-full h-full object-cover rounded-lg"
+                  referrerPolicy="no-referrer"
+                />
               </div>
               <div>
                 <span className="font-display font-bold text-white text-xl tracking-tight block">
                   ALOLO STUDIO
                 </span>
-                <span className="text-xs text-slate-400">MUSTAPHA ABDUL-TOFIK</span>
+                <span className="text-xs text-emerald-300/80 font-bold tracking-wider">MUSTAPHA ABDUL-TOFIK</span>
               </div>
             </div>
 

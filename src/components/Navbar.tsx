@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X, Sparkles, PhoneCall } from 'lucide-react';
+import { logoImg } from '../data/portfolioData';
 
 interface NavbarProps {
   onNavigate: (sectionId: string) => void;
@@ -48,8 +49,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate }) => {
             className="flex items-center gap-3 group text-left focus:outline-none"
             id="nav-logo-button"
           >
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-400 to-teal-500 flex items-center justify-center font-display font-extrabold text-slate-950 text-xl shadow-md shadow-emerald-500/20 group-hover:scale-105 transition-transform">
-              A
+            <div className="w-11 h-11 rounded-xl bg-slate-900 border border-emerald-500/30 overflow-hidden shadow-lg shadow-emerald-500/10 group-hover:scale-105 transition-transform p-0.5">
+              <img
+                src={logoImg}
+                alt="ALOLO STUDIO Logo"
+                className="w-full h-full object-cover rounded-lg"
+                referrerPolicy="no-referrer"
+              />
             </div>
             <div>
               <div className="font-display font-bold text-white text-lg tracking-tight flex items-center gap-1.5">
