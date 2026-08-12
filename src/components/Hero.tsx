@@ -112,14 +112,15 @@ export const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
                   <span className="text-emerald-400/30">STUDIO</span>
                 </div>
 
-                <div className="relative rounded-2xl overflow-hidden aspect-square bg-slate-950 z-10 border-2 border-amber-400/50 shadow-inner">
+                <div className="relative rounded-2xl overflow-hidden aspect-square bg-slate-900 z-10 border-2 border-amber-400/60 shadow-inner">
                   <img
                     src={profileImg}
                     alt="Alolo Studio Creator - Mustapha Abdul-Tofik"
                     className="w-full h-full object-cover object-center transform hover:scale-105 transition-transform duration-700 relative z-10"
-                    referrerPolicy="no-referrer"
+                    loading="eager"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-transparent to-transparent opacity-80 z-20"></div>
+                  {/* Subtle gradient at bottom only to contrast floating badge */}
+                  <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent pointer-events-none z-20"></div>
                   
                   {/* Floating Badge */}
                   <div className="absolute bottom-4 left-4 right-4 bg-slate-950/95 backdrop-blur-md p-3.5 rounded-2xl border border-amber-400/60 flex items-center justify-between z-30 shadow-xl">

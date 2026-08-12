@@ -33,7 +33,7 @@ export const AboutSection: React.FC = () => {
                     src={profileImg}
                     alt="Mustapha Abdul-Tofik"
                     className="w-12 h-12 rounded-full object-cover border-2 border-amber-400 shadow-md"
-                    referrerPolicy="no-referrer"
+                    loading="eager"
                   />
                   <div>
                     <h4 className="text-white font-black text-sm sm:text-base">Mustapha Abdul-Tofik</h4>

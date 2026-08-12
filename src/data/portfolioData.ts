@@ -1,14 +1,15 @@
 import { PortfolioItem, ServiceType, SkillItem } from '../types';
 
-// Importing generated local images
-import profileImg from '../assets/images/my_profile_2.png';
-import logoImg from '../assets/images/alolo_studio_logo_1786536392548.jpg';
+// Importing embedded base64 images for 100% fail-proof instant rendering
+import { profileImageBase64 } from '../assets/images/profileBase64';
+import { logoImageBase64 } from '../assets/images/logoBase64';
 import agencyFlyerImg from '../assets/images/flyer_sample_graphic_1786460518557.jpg';
 import foodFlyerImg from '../assets/images/food_flyer_sample_1786460537825.jpg';
 import videoAdImg from '../assets/images/video_ad_thumbnail_1786460549757.jpg';
 import websiteImg from '../assets/images/website_design_sample_1786460564006.jpg';
 
-export { profileImg, logoImg };
+export const profileImg = profileImageBase64;
+export const logoImg = logoImageBase64;
 
 export const SERVICES_DATA: Array<{
   id: ServiceType;
