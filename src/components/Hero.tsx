@@ -29,42 +29,45 @@ export const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
             </div>
 
             {/* Main Heading */}
-            <div className="space-y-3">
-              <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-[1.1]">
+            <div className="space-y-4">
+              <h1 className="font-display text-5xl sm:text-6xl lg:text-7xl font-extrabold text-white tracking-tight leading-[1.08]">
                 ALOLO <br className="hidden sm:inline" />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-emerald-300 to-cyan-300">
                   STUDIO
                 </span>
               </h1>
-              <p className="text-xl sm:text-2xl font-bold text-emerald-300/95 font-display">
-                Mustapha Abdul-Tofik — Digital Creator & Technology Specialist
+              <p className="text-2xl sm:text-3xl font-bold text-amber-300/90 font-display tracking-tight">
+                Mustapha Abdul-Tofik
               </p>
+              <div className="inline-block px-4 py-1.5 rounded-xl bg-emerald-900/60 border border-emerald-500/40 text-emerald-200 font-bold text-sm sm:text-base tracking-wide">
+                Digital Creator & Creative Technology Specialist
+              </div>
             </div>
 
             {/* Supporting Text */}
-            <p className="text-base sm:text-lg text-slate-300 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-normal">
-              I help businesses turn their ideas into professional designs, engaging content, video advertisements, and modern websites.
+            <p className="text-base sm:text-xl text-slate-200 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-normal">
+              I help businesses and brands stand out with professional graphic designs, engaging video commercials, and high-converting modern websites in Tamale, Ghana.
             </p>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
+            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-3">
               <button
                 onClick={() => onNavigate('portfolio')}
-                className="w-full sm:w-auto px-7 py-3.5 rounded-full bg-gradient-to-r from-emerald-400 to-teal-500 text-slate-950 font-bold text-sm tracking-wide flex items-center justify-center gap-2 hover:shadow-xl hover:shadow-emerald-500/25 hover:scale-105 active:scale-95 transition-all cursor-pointer"
+                className="w-full sm:w-auto px-8 py-4 rounded-full bg-gradient-to-r from-amber-400 via-emerald-400 to-teal-400 text-slate-950 font-extrabold text-base tracking-wide flex items-center justify-center gap-2 hover:shadow-2xl hover:shadow-emerald-400/40 hover:scale-105 active:scale-95 transition-all cursor-pointer"
                 id="hero-btn-view-work"
               >
-                <Eye className="w-4 h-4" />
-                View My Work
-                <ArrowRight className="w-4 h-4" />
+                <Eye className="w-5 h-5" />
+                <span>Explore My Portfolio</span>
+                <ArrowRight className="w-5 h-5" />
               </button>
 
               <button
                 onClick={() => onNavigate('contact')}
-                className="w-full sm:w-auto px-7 py-3.5 rounded-full bg-emerald-950/60 border border-emerald-700/80 hover:border-emerald-400/80 text-emerald-100 hover:text-white font-bold text-sm tracking-wide flex items-center justify-center gap-2 hover:bg-emerald-900/60 transition-all cursor-pointer"
+                className="w-full sm:w-auto px-8 py-4 rounded-full bg-slate-900/90 border-2 border-emerald-400/80 hover:border-amber-400 text-emerald-100 hover:text-white font-extrabold text-base tracking-wide flex items-center justify-center gap-2 hover:bg-emerald-950 transition-all cursor-pointer shadow-lg"
                 id="hero-btn-work-with-me"
               >
-                <Sparkles className="w-4 h-4 text-emerald-400" />
-                Work With Me
+                <Sparkles className="w-5 h-5 text-amber-300" />
+                <span>Get In Touch</span>
               </button>
             </div>
 
@@ -90,54 +93,54 @@ export const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
           <div className="lg:col-span-5 relative">
             
             {/* Prominent "ALOLO STUDIO" Watermark Text directly behind the picture container */}
-            <div className="absolute -top-14 sm:-top-20 left-1/2 -translate-x-1/2 w-[120%] text-center pointer-events-none select-none z-0">
-              <span className="font-display text-6xl sm:text-7xl lg:text-8xl font-black tracking-widest uppercase text-transparent bg-clip-text bg-gradient-to-b from-emerald-400/40 via-emerald-500/20 to-transparent drop-shadow-md">
+            <div className="absolute -top-16 sm:-top-24 left-1/2 -translate-x-1/2 w-[130%] text-center pointer-events-none select-none z-0">
+              <span className="font-display text-6xl sm:text-7xl lg:text-8xl font-black tracking-widest uppercase text-transparent bg-clip-text bg-gradient-to-b from-amber-400/45 via-emerald-400/25 to-transparent drop-shadow-lg">
                 ALOLO STUDIO
               </span>
             </div>
 
             <div className="relative mx-auto max-w-md lg:max-w-none z-10">
               
-              {/* Decorative Emerald Frame Glow */}
-              <div className="absolute -inset-1.5 rounded-3xl bg-gradient-to-tr from-emerald-500 via-teal-400 to-cyan-500 opacity-50 blur-xl animate-pulse"></div>
+              {/* Decorative Gold & Emerald Frame Glow */}
+              <div className="absolute -inset-2 rounded-3xl bg-gradient-to-tr from-amber-400 via-emerald-400 to-cyan-400 opacity-60 blur-xl animate-pulse"></div>
               
-              <div className="relative rounded-3xl bg-emerald-950/90 border border-emerald-800/80 p-3.5 shadow-2xl overflow-hidden backdrop-blur-md">
+              <div className="relative rounded-3xl bg-slate-950/95 border-2 border-emerald-500/80 p-3.5 shadow-2xl overflow-hidden backdrop-blur-md">
                 
                 {/* Watermark directly inside picture frame background behind image */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center font-display font-black text-4xl sm:text-5xl tracking-widest text-emerald-400/35 uppercase pointer-events-none z-0 select-none leading-none">
+                <div className="absolute inset-0 flex flex-col items-center justify-center font-display font-black text-5xl sm:text-6xl tracking-widest text-amber-400/30 uppercase pointer-events-none z-0 select-none leading-none">
                   <span>ALOLO</span>
-                  <span className="text-teal-300/30">STUDIO</span>
+                  <span className="text-emerald-400/30">STUDIO</span>
                 </div>
 
-                <div className="relative rounded-2xl overflow-hidden aspect-square bg-emerald-950 z-10 border border-emerald-900/60">
+                <div className="relative rounded-2xl overflow-hidden aspect-square bg-slate-950 z-10 border-2 border-amber-400/50 shadow-inner">
                   <img
                     src={profileImg}
                     alt="Alolo Studio Creator - Mustapha Abdul-Tofik"
                     className="w-full h-full object-cover object-center transform hover:scale-105 transition-transform duration-700 relative z-10"
                     referrerPolicy="no-referrer"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/90 via-transparent to-transparent opacity-80 z-20"></div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-transparent to-transparent opacity-80 z-20"></div>
                   
                   {/* Floating Badge */}
-                  <div className="absolute bottom-4 left-4 right-4 bg-emerald-950/95 backdrop-blur-md p-3.5 rounded-2xl border border-emerald-800/80 flex items-center justify-between z-30 shadow-lg">
+                  <div className="absolute bottom-4 left-4 right-4 bg-slate-950/95 backdrop-blur-md p-3.5 rounded-2xl border border-amber-400/60 flex items-center justify-between z-30 shadow-xl">
                     <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
-                        <Shield className="w-5 h-5" />
+                      <div className="w-10 h-10 rounded-xl bg-amber-400/20 text-amber-300 flex items-center justify-center font-bold">
+                        <Shield className="w-5 h-5 text-amber-400" />
                       </div>
                       <div>
-                        <h4 className="text-xs font-bold text-white">ALOLO STUDIO</h4>
-                        <p className="text-[11px] text-emerald-300/80">Verified Local Creative Provider</p>
+                        <h4 className="text-sm font-black text-white font-display tracking-wide">ALOLO STUDIO</h4>
+                        <p className="text-[11px] text-emerald-300 font-bold">Verified Creative Provider</p>
                       </div>
                     </div>
-                    <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+                    <CheckCircle2 className="w-6 h-6 text-emerald-400" />
                   </div>
                 </div>
               </div>
 
               {/* Decorative Accent Badges */}
-              <div className="absolute -bottom-5 -right-5 bg-emerald-950 border border-emerald-800 p-3 rounded-2xl shadow-xl backdrop-blur-md hidden sm:flex items-center gap-2 z-30">
-                <span className="w-3 h-3 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span className="text-xs font-bold text-emerald-100">ALOLO STUDIO GHANA</span>
+              <div className="absolute -bottom-6 -right-6 bg-slate-950 border-2 border-emerald-400 p-3.5 rounded-2xl shadow-2xl backdrop-blur-md hidden sm:flex items-center gap-2 z-30">
+                <span className="w-3.5 h-3.5 rounded-full bg-amber-400 animate-pulse"></span>
+                <span className="text-xs font-black text-white tracking-wider uppercase font-display">ALOLO STUDIO GHANA 🇬🇭</span>
               </div>
 
             </div>

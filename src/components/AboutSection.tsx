@@ -11,19 +11,19 @@ export const AboutSection: React.FC = () => {
           
           {/* Left Decorative Feature Card */}
           <div className="lg:col-span-5 space-y-6">
-            <div className="glass-card p-8 rounded-3xl border border-slate-800 relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/10 rounded-full blur-2xl"></div>
+            <div className="glass-card p-8 rounded-3xl border border-emerald-500/30 relative overflow-hidden shadow-xl">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl"></div>
               
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-semibold mb-4">
-                <UserCheck className="w-3.5 h-3.5" />
+              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-amber-300 text-xs font-extrabold mb-4">
+                <UserCheck className="w-4 h-4 text-amber-400" />
                 <span>Honest & Dedicated Service</span>
               </div>
 
-              <h3 className="text-2xl font-bold text-white font-display leading-snug">
+              <h3 className="text-2xl sm:text-3xl font-black text-white font-display leading-snug">
                 Building practical digital skills to solve real business challenges.
               </h3>
 
-              <p className="text-slate-400 text-sm leading-relaxed mt-4">
+              <p className="text-slate-200 text-sm sm:text-base leading-relaxed mt-4">
                 "I believe every business in Tamale deserves clear, professional visual marketing and a modern mobile presence that builds trust with clients."
               </p>
 
@@ -32,16 +32,16 @@ export const AboutSection: React.FC = () => {
                   <img
                     src={profileImg}
                     alt="Mustapha Abdul-Tofik"
-                    className="w-10 h-10 rounded-full object-cover border border-cyan-500/30"
+                    className="w-12 h-12 rounded-full object-cover border-2 border-amber-400 shadow-md"
                     referrerPolicy="no-referrer"
                   />
                   <div>
-                    <h4 className="text-white font-bold text-sm">Mustapha Abdul-Tofik</h4>
-                    <p className="text-xs text-slate-400">Founder, Alolo Studio</p>
+                    <h4 className="text-white font-black text-sm sm:text-base">Mustapha Abdul-Tofik</h4>
+                    <p className="text-xs text-emerald-300 font-bold">Founder, Alolo Studio</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-1 px-3 py-1 bg-slate-800 rounded-lg text-xs font-semibold text-emerald-400">
-                  <MapPin className="w-3.5 h-3.5" /> Tamale, GH
+                <div className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 border border-emerald-500/30 rounded-xl text-xs font-extrabold text-emerald-300 shadow">
+                  <MapPin className="w-3.5 h-3.5 text-amber-400" /> Tamale, GH
                 </div>
               </div>
             </div>

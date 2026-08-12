@@ -184,14 +184,14 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
         
         {/* Section Heading */}
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900 border border-slate-800 text-xs font-bold text-cyan-400 uppercase tracking-widest">
-            <Sparkles className="w-3.5 h-3.5" /> Start A Conversation
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-900 border border-emerald-500/40 text-xs font-extrabold text-amber-300 uppercase tracking-widest shadow-md">
+            <Sparkles className="w-4 h-4 text-amber-400" /> Start A Project
           </div>
-          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight">
-            Have a project in mind? Let's create something professional.
+          <h2 className="font-display text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight">
+            Have a project in mind? Let's build something exceptional.
           </h2>
-          <p className="text-slate-400 text-base sm:text-lg">
-            Send your project details or service inquiry below. I reply promptly to discuss your requirements.
+          <p className="text-slate-200 text-lg sm:text-xl font-normal leading-relaxed">
+            Send your project details or service inquiry directly below or connect via WhatsApp at <span className="text-emerald-400 font-extrabold">0533580326</span>.
           </p>
         </div>
 

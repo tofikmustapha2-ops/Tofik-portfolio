@@ -31,14 +31,14 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ onSelectServic
         
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900 border border-slate-800 text-xs font-bold text-cyan-400 uppercase tracking-widest">
-            <Sparkles className="w-3.5 h-3.5" /> Core Offerings
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-900 border border-emerald-500/40 text-xs font-extrabold text-amber-300 uppercase tracking-widest shadow-md">
+            <Sparkles className="w-4 h-4 text-amber-400" /> Core Studio Offerings
           </div>
-          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight">
-            Three Key Services Built for Business Growth
+          <h2 className="font-display text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight">
+            Three Powerful Digital Services for Your Brand
           </h2>
-          <p className="text-slate-400 text-base sm:text-lg">
-            High-value creative digital solutions designed specifically to help local Ghanaian enterprises, shops, and entrepreneurs stand out.
+          <p className="text-slate-200 text-lg sm:text-xl font-normal leading-relaxed">
+            High-value creative digital solutions designed specifically to help Ghanaian enterprises, shops, and entrepreneurs stand out.
           </p>
         </div>
 

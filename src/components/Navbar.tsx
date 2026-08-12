@@ -69,12 +69,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate }) => {
           </button>
 
           {/* Desktop Nav Links */}
-          <nav className="hidden md:flex items-center gap-1 bg-emerald-950/70 p-1.5 rounded-full border border-emerald-800/80 backdrop-blur-md">
+          <nav className="hidden md:flex items-center gap-1 bg-slate-900/90 p-1.5 rounded-full border border-emerald-500/40 backdrop-blur-md shadow-lg">
             {navLinks.map((link) => (
               <button
                 key={link.id}
                 onClick={() => handleLinkClick(link.id)}
-                className="px-4 py-2 rounded-full text-xs font-semibold text-slate-300 hover:text-emerald-300 hover:bg-emerald-900/60 transition-all cursor-pointer whitespace-nowrap"
+                className="px-4 py-2 rounded-full text-xs font-bold text-slate-200 hover:text-amber-300 hover:bg-emerald-900/80 transition-all cursor-pointer whitespace-nowrap"
                 id={`nav-link-${link.id}`}
               >
                 {link.name}
@@ -86,10 +86,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate }) => {
           <div className="hidden lg:flex items-center gap-3">
             <button
               onClick={() => handleLinkClick('contact')}
-              className="px-5 py-2.5 rounded-full bg-gradient-to-r from-emerald-400 to-teal-500 text-slate-950 text-xs font-bold tracking-wide flex items-center gap-2 hover:shadow-lg hover:shadow-emerald-500/25 hover:scale-105 active:scale-95 transition-all cursor-pointer"
+              className="px-5 py-2.5 rounded-full bg-gradient-to-r from-amber-400 via-emerald-400 to-teal-400 text-slate-950 text-xs font-extrabold tracking-wide flex items-center gap-2 hover:shadow-xl hover:shadow-amber-400/30 hover:scale-105 active:scale-95 transition-all cursor-pointer shadow-md"
               id="desktop-cta-button"
             >
-              <Sparkles className="w-3.5 h-3.5" />
+              <Sparkles className="w-3.5 h-3.5 fill-slate-950" />
               Work With Me
             </button>
           </div>
