@@ -111,14 +111,68 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
     }
   };
 
-  // Social Links with real provided user phone number
+  // Social Links with correct user WhatsApp & Call numbers
   const socialLinks = [
-    { name: 'WhatsApp', url: 'https://wa.me/233203530939', label: '0203530939 (Click to chat)' },
-    { name: 'Phone', url: 'tel:+233203530939', label: '0203530939' },
+    { name: 'WhatsApp', url: 'https://wa.me/233533580326', label: '0533580326 (Instant Chat)' },
+    { name: 'Phone Call', url: 'tel:+233203530939', label: '0203530939 (Direct Call)' },
     { name: 'Instagram', url: 'https://instagram.com/alolostudio.gh', label: '@alolostudio.gh' },
     { name: 'TikTok', url: 'https://tiktok.com/@alolostudio.gh', label: '@alolostudio.gh' },
     { name: 'LinkedIn', url: 'https://linkedin.com/in/mustapha-abdul-tofik', label: 'Mustapha Abdul-Tofik' },
   ];
+
+  // State for Viewing Received Messages Inbox
+  const [showInbox, setShowInbox] = useState<boolean>(false);
+  const [receivedMessages, setReceivedMessages] = useState<any[]>([]);
+  const [loadingMessages, setLoadingMessages] = useState<boolean>(false);
+
+  const fetchInboxMessages = async () => {
+    setLoadingMessages(true);
+    try {
+      const res = await fetch('/api/messages');
+      const data = await res.json();
+      if (data.success && Array.isArray(data.messages)) {
+        setReceivedMessages(data.messages);
+      }
+    } catch (e) {
+      console.error('Error fetching inbox messages:', e);
+    } finally {
+      setLoadingMessages(false);
+    }
+  };
+
+  const handleToggleInbox = () => {
+    if (!showInbox) {
+      fetchInboxMessages();
+    }
+    setShowInbox(!showInbox);
+  };
+
+  // Direct Send via WhatsApp function
+  const handleSendViaWhatsApp = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (!formData.fullName.trim() || !formData.message.trim()) {
+      setStatus('error');
+      setErrorMessage('Please fill in your Name and Project Details before sending via WhatsApp.');
+      return;
+    }
+
+    const formattedMessage = `Hello Mustapha (Alolo Studio)!\n\n*Name:* ${formData.fullName}\n*Email:* ${formData.email || 'N/A'}\n*Business:* ${formData.businessName || 'N/A'}\n*Service:* ${formData.serviceNeeded}\n\n*Project Details:*\n${formData.message}`;
+    const whatsappUrl = `https://wa.me/233533580326?text=${encodeURIComponent(formattedMessage)}`;
+
+    // Save to inbox API silently in background
+    try {
+      await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+    } catch (err) {
+      // Ignore background post error if opening WhatsApp
+    }
+
+    window.open(whatsappUrl, '_blank');
+    setStatus('success');
+  };
 
   return (
     <section id="contact" className="py-24 relative overflow-hidden bg-slate-950">
@@ -181,10 +235,15 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
                     <Phone className="w-5 h-5" />
                   </div>
                   <div>
-                    <h4 className="text-xs text-slate-400 uppercase font-bold">Phone & WhatsApp</h4>
-                    <a href="https://wa.me/233203530939" target="_blank" rel="noopener noreferrer" className="text-sm font-bold text-cyan-400 hover:underline">
-                      0203530939
-                    </a>
+                    <h4 className="text-xs text-slate-400 uppercase font-bold">WhatsApp & Phone Lines</h4>
+                    <div className="flex flex-col text-xs font-bold gap-0.5 mt-0.5">
+                      <a href="https://wa.me/233533580326" target="_blank" rel="noopener noreferrer" className="text-emerald-400 hover:underline flex items-center gap-1">
+                        <span>WhatsApp: 0533580326</span>
+                      </a>
+                      <a href="tel:+233203530939" className="text-cyan-400 hover:underline flex items-center gap-1">
+                        <span>Phone Call: 0203530939</span>
+                      </a>
+                    </div>
                   </div>
                 </div>
 
@@ -370,27 +429,137 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
                     ></textarea>
                   </div>
 
-                  {/* Submit Button */}
-                  <button
-                    type="submit"
-                    disabled={status === 'submitting'}
-                    className="w-full py-4 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold text-sm tracking-wide flex items-center justify-center gap-2 shadow-xl shadow-cyan-500/20 active:scale-[0.98] transition-all cursor-pointer disabled:opacity-50"
-                    id="contact-submit-btn"
-                  >
-                    {status === 'submitting' ? (
-                      <span>Sending Message...</span>
-                    ) : (
-                      <>
-                        <Send className="w-4 h-4" />
-                        <span>Send Message</span>
-                      </>
-                    )}
-                  </button>
+                  {/* Action Buttons: Instant WhatsApp OR Direct Server Inbox */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                    <button
+                      type="button"
+                      onClick={handleSendViaWhatsApp}
+                      className="w-full py-3.5 px-4 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs tracking-wide flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 active:scale-[0.98] transition-all cursor-pointer"
+                      id="contact-whatsapp-instant-btn"
+                    >
+                      <MessageSquare className="w-4 h-4 fill-slate-950" />
+                      <span>Send via WhatsApp (Instant)</span>
+                    </button>
+
+                    <button
+                      type="submit"
+                      disabled={status === 'submitting'}
+                      className="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold text-xs tracking-wide flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/20 active:scale-[0.98] transition-all cursor-pointer disabled:opacity-50"
+                      id="contact-submit-btn"
+                    >
+                      {status === 'submitting' ? (
+                        <span>Sending Message...</span>
+                      ) : (
+                        <>
+                          <Send className="w-4 h-4" />
+                          <span>Send via Website Inbox</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+
+                  <div className="pt-4 text-center">
+                    <p className="text-[11px] text-slate-400">
+                      ⚡ For fastest reply, use <span className="text-emerald-400 font-bold">WhatsApp (0533580326)</span>. Both options deliver your message instantly to Mustapha.
+                    </p>
+                  </div>
 
                 </form>
               )}
 
             </div>
+
+            {/* RECEIVED MESSAGES INBOX VIEW (For Mustapha / Studio Admin) */}
+            <div className="mt-6 pt-4 border-t border-slate-800">
+              <button
+                onClick={handleToggleInbox}
+                className="w-full py-3 px-4 rounded-2xl bg-slate-900 border border-slate-800 hover:border-cyan-500/50 text-slate-300 hover:text-white text-xs font-bold flex items-center justify-between transition-colors cursor-pointer"
+              >
+                <span className="flex items-center gap-2">
+                  <Mail className="w-4 h-4 text-cyan-400" />
+                  <span>Received Messages & Inquiries Inbox</span>
+                </span>
+                <span className="px-2.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 text-[11px] font-mono">
+                  {showInbox ? 'Close Inbox' : 'View Received Messages'}
+                </span>
+              </button>
+
+              {showInbox && (
+                <div className="mt-4 p-5 rounded-2xl bg-slate-900/90 border border-slate-800 space-y-4 animate-in fade-in duration-200">
+                  <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+                    <h4 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                      <span>Received Inbox</span>
+                      <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[10px]">
+                        {receivedMessages.length} Messages
+                      </span>
+                    </h4>
+                    <button
+                      onClick={fetchInboxMessages}
+                      className="text-[11px] text-cyan-400 hover:underline cursor-pointer"
+                    >
+                      Refresh
+                    </button>
+                  </div>
+
+                  {loadingMessages ? (
+                    <div className="text-center py-6 text-xs text-slate-400">Loading messages...</div>
+                  ) : receivedMessages.length === 0 ? (
+                    <div className="text-center py-6 text-xs text-slate-400">
+                      No messages received yet. Messages submitted through the form will appear here.
+                    </div>
+                  ) : (
+                    <div className="space-y-3 max-h-80 overflow-y-auto pr-1">
+                      {receivedMessages.map((msg) => (
+                        <div
+                          key={msg.id}
+                          className="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-2 text-xs"
+                        >
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="font-bold text-white text-sm">{msg.fullName}</span>
+                            <span className="text-[10px] text-slate-500">
+                              {new Date(msg.createdAt).toLocaleString()}
+                            </span>
+                          </div>
+
+                          <div className="text-slate-400 text-[11px] flex flex-wrap gap-x-3 gap-y-1">
+                            <span>📧 {msg.email}</span>
+                            {msg.businessName && <span>🏢 {msg.businessName}</span>}
+                            <span className="text-cyan-400 font-semibold">🛠️ {msg.serviceNeeded}</span>
+                          </div>
+
+                          <p className="text-slate-200 pt-1 text-xs bg-slate-900/60 p-2.5 rounded-lg border border-slate-800/60 leading-relaxed">
+                            "{msg.message}"
+                          </p>
+
+                          <div className="pt-2 flex items-center gap-2">
+                            <a
+                              href={`https://wa.me/233533580326?text=${encodeURIComponent(
+                                `Hello ${msg.fullName}, this is Mustapha from Alolo Studio replying to your inquiry about ${msg.serviceNeeded}.`
+                              )}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="px-3 py-1.5 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 font-bold text-[11px] flex items-center gap-1 transition-colors"
+                            >
+                              <MessageSquare className="w-3 h-3" />
+                              <span>Reply on WhatsApp</span>
+                            </a>
+
+                            <a
+                              href={`mailto:${msg.email}?subject=Re: Alolo Studio Inquiry - ${msg.serviceNeeded}&body=Hello ${msg.fullName},%0D%0A%0D%0AThank you for reaching out to Alolo Studio!`}
+                              className="px-3 py-1.5 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 font-bold text-[11px] flex items-center gap-1 transition-colors"
+                            >
+                              <Mail className="w-3 h-3" />
+                              <span>Reply via Email</span>
+                            </a>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
           </div>
 
         </div>

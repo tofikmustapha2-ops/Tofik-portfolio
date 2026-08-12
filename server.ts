@@ -8,31 +8,77 @@ async function startServer() {
 
   app.use(express.json());
 
-  // API Contact Route for Handling Inquiries
-  app.post("/api/contact", (req, res) => {
-    const { fullName, email, businessName, serviceNeeded, message } = req.body;
+// API Contact & Messages In-Memory Store
+interface ContactMessage {
+  id: string;
+  fullName: string;
+  email: string;
+  businessName?: string;
+  serviceNeeded: string;
+  message: string;
+  createdAt: string;
+  status: 'unread' | 'read' | 'replied';
+}
 
-    if (!fullName || !email || !serviceNeeded || !message) {
-      return res.status(400).json({
-        success: false,
-        message: "Please fill in all required fields (Name, Email, Service Needed, and Message).",
-      });
-    }
+const receivedMessages: ContactMessage[] = [
+  {
+    id: 'msg-1',
+    fullName: 'Sample Client',
+    email: 'client@example.com',
+    businessName: 'Tamale Tech Hub',
+    serviceNeeded: 'Business Website Design',
+    message: 'Hello Mustapha! I need a modern website for our business in Tamale. Please contact me on WhatsApp.',
+    createdAt: new Date(Date.now() - 3600000).toISOString(),
+    status: 'unread',
+  }
+];
 
-    console.log("==========================================");
-    console.log("NEW PORTFOLIO INQUIRY RECEIVED FOR ALOLO STUDIO:");
-    console.log(`From: ${fullName} <${email}>`);
-    console.log(`Business: ${businessName || "N/A"}`);
-    console.log(`Service Requested: ${serviceNeeded}`);
-    console.log(`Message: ${message}`);
-    console.log("==========================================");
+// API Contact Route for Handling Inquiries
+app.post("/api/contact", (req, res) => {
+  const { fullName, email, businessName, serviceNeeded, message } = req.body;
 
-    // Returns exact requested success confirmation message
-    return res.status(200).json({
-      success: true,
-      message: "Thank you! Your message has been sent successfully. I’ll get back to you soon.",
+  if (!fullName || !email || !serviceNeeded || !message) {
+    return res.status(400).json({
+      success: false,
+      message: "Please fill in all required fields (Name, Email, Service Needed, and Message).",
     });
+  }
+
+  const newMessage: ContactMessage = {
+    id: `msg-${Date.now()}`,
+    fullName,
+    email,
+    businessName,
+    serviceNeeded,
+    message,
+    createdAt: new Date().toISOString(),
+    status: 'unread',
+  };
+
+  receivedMessages.unshift(newMessage);
+
+  console.log("==========================================");
+  console.log("NEW PORTFOLIO INQUIRY RECEIVED FOR ALOLO STUDIO:");
+  console.log(`From: ${fullName} <${email}>`);
+  console.log(`Business: ${businessName || "N/A"}`);
+  console.log(`Service Requested: ${serviceNeeded}`);
+  console.log(`Message: ${message}`);
+  console.log("==========================================");
+
+  return res.status(200).json({
+    success: true,
+    message: "Thank you! Your message has been sent successfully. I’ll get back to you soon.",
+    messageData: newMessage,
   });
+});
+
+// GET all received messages for Inbox
+app.get("/api/messages", (req, res) => {
+  return res.json({
+    success: true,
+    messages: receivedMessages,
+  });
+});
 
   // Vite middleware for development vs production
   if (process.env.NODE_ENV !== "production") {
