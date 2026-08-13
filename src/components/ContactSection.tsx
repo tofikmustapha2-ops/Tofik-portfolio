@@ -187,6 +187,34 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
     setStatus('success');
   };
 
+  // Direct Send via Email Client App (Gmail, Outlook, Apple Mail)
+  const handleSendViaEmailApp = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (!formData.fullName.trim() || !formData.email.trim() || !formData.message.trim()) {
+      setStatus('error');
+      setErrorMessage('Please fill in your Name, Email Address, and Project Details.');
+      return;
+    }
+
+    const emailSubject = `Alolo Studio Inquiry from ${formData.fullName} (${formData.serviceNeeded})`;
+    const emailBody = `Hello Mustapha,\n\nName: ${formData.fullName}\nEmail: ${formData.email}\nBusiness: ${formData.businessName || 'N/A'}\nService Needed: ${formData.serviceNeeded}\n\nProject Details:\n${formData.message}\n\nSent from Alolo Studio Website`;
+
+    const mailtoUrl = `mailto:tofikmustapha2@gmail.com?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+
+    try {
+      await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+    } catch (err) {
+      console.warn('API contact error:', err);
+    }
+
+    window.open(mailtoUrl, '_blank');
+    setStatus('success');
+  };
+
   return (
     <section id="contact" className="py-24 relative overflow-hidden bg-slate-950">
       
@@ -302,14 +330,16 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
             </div>
 
             {/* Email Integration Configuration Notice */}
-            <div className="p-4 rounded-2xl bg-cyan-950/30 border border-cyan-800/40 text-xs text-cyan-200/90 space-y-1">
+            <div className="p-4 rounded-2xl bg-cyan-950/30 border border-cyan-800/40 text-xs text-cyan-200/90 space-y-2">
               <div className="font-bold flex items-center gap-1.5 text-cyan-300">
                 <HelpCircle className="w-4 h-4 shrink-0" />
-                <span>Email Delivery Service Ready</span>
+                <span>How Inquiries Are Delivered:</span>
               </div>
-              <p className="text-[11px] leading-relaxed text-cyan-200/80">
-                Form submissions automatically post to the backend endpoint and can be routed to Formspree or EmailJS by filling the configuration variables in <code className="bg-slate-900 px-1 py-0.5 rounded text-cyan-300">ContactSection.tsx</code>.
-              </p>
+              <ul className="text-[11px] leading-relaxed text-cyan-200/80 space-y-1 list-disc list-inside">
+                <li><strong className="text-emerald-300">WhatsApp (Instant)</strong>: Sends text directly to your WhatsApp <code className="text-white">0533580326</code>.</li>
+                <li><strong className="text-rose-300">Direct Email (Gmail)</strong>: Opens your client's Gmail app pre-addressed to <code className="text-white">tofikmustapha2@gmail.com</code>.</li>
+                <li><strong className="text-cyan-300">Website Inbox</strong>: Stores message in your site inbox below. To receive auto-emails silently in Gmail without opening an app, sign up at <a href="https://formspree.io" target="_blank" rel="noreferrer" className="underline font-bold text-amber-300">Formspree.io</a> and add your Form ID.</li>
+              </ul>
             </div>
 
           </div>
@@ -340,10 +370,20 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
                       )}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/25 transition-all cursor-pointer"
+                      className="w-full sm:w-auto px-5 py-3.5 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/25 transition-all cursor-pointer"
                     >
                       <MessageSquare className="w-4 h-4 fill-slate-950" />
-                      <span>Also Open on WhatsApp (0533580326)</span>
+                      <span>Open on WhatsApp</span>
+                    </a>
+
+                    <a
+                      href={`mailto:tofikmustapha2@gmail.com?subject=${encodeURIComponent(`Alolo Studio Inquiry from ${formData.fullName}`)}&body=${encodeURIComponent(`Hello Mustapha,\n\nName: ${formData.fullName}\nEmail: ${formData.email}\nService: ${formData.serviceNeeded}\n\nMessage:\n${formData.message}`)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full sm:w-auto px-5 py-3.5 rounded-2xl bg-rose-500 hover:bg-rose-400 text-white font-extrabold text-xs flex items-center justify-center gap-2 shadow-lg shadow-rose-500/25 transition-all cursor-pointer"
+                    >
+                      <Mail className="w-4 h-4 text-white" />
+                      <span>Send to Gmail App</span>
                     </a>
 
                     <button
@@ -357,9 +397,9 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
                           message: '',
                         });
                       }}
-                      className="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs transition-colors cursor-pointer"
+                      className="w-full sm:w-auto px-5 py-3.5 rounded-2xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs transition-colors cursor-pointer"
                     >
-                      Send Another Inquiry
+                      Send Another
                     </button>
                   </div>
                 </div>
@@ -465,38 +505,48 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
                     ></textarea>
                   </div>
 
-                  {/* Action Buttons: Instant WhatsApp OR Direct Server Inbox */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                  {/* Action Buttons: Instant WhatsApp, Direct Gmail, OR Website Inbox */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-2">
                     <button
                       type="button"
                       onClick={handleSendViaWhatsApp}
-                      className="w-full py-3.5 px-4 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs tracking-wide flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 active:scale-[0.98] transition-all cursor-pointer"
+                      className="w-full py-3.5 px-3 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-[11px] sm:text-xs tracking-wide flex items-center justify-center gap-1.5 shadow-lg shadow-emerald-500/20 active:scale-[0.98] transition-all cursor-pointer"
                       id="contact-whatsapp-instant-btn"
                     >
                       <MessageSquare className="w-4 h-4 fill-slate-950" />
-                      <span>Send via WhatsApp (Instant)</span>
+                      <span>WhatsApp (Instant)</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={handleSendViaEmailApp}
+                      className="w-full py-3.5 px-3 rounded-2xl bg-rose-500 hover:bg-rose-400 text-white font-extrabold text-[11px] sm:text-xs tracking-wide flex items-center justify-center gap-1.5 shadow-lg shadow-rose-500/20 active:scale-[0.98] transition-all cursor-pointer"
+                      id="contact-email-app-btn"
+                    >
+                      <Mail className="w-4 h-4 text-white" />
+                      <span>Direct Email (Gmail)</span>
                     </button>
 
                     <button
                       type="submit"
                       disabled={status === 'submitting'}
-                      className="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold text-xs tracking-wide flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/20 active:scale-[0.98] transition-all cursor-pointer disabled:opacity-50"
+                      className="w-full py-3.5 px-3 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-extrabold text-[11px] sm:text-xs tracking-wide flex items-center justify-center gap-1.5 shadow-lg shadow-cyan-500/20 active:scale-[0.98] transition-all cursor-pointer disabled:opacity-50"
                       id="contact-submit-btn"
                     >
                       {status === 'submitting' ? (
-                        <span>Sending Message...</span>
+                        <span>Sending...</span>
                       ) : (
                         <>
                           <Send className="w-4 h-4" />
-                          <span>Send via Website Inbox</span>
+                          <span>Website Inbox</span>
                         </>
                       )}
                     </button>
                   </div>
 
-                  <div className="pt-4 text-center">
-                    <p className="text-[11px] text-slate-400">
-                      ⚡ For fastest reply, use <span className="text-emerald-400 font-bold">WhatsApp (0533580326)</span>. Both options deliver your message instantly to Mustapha.
+                  <div className="pt-3 text-center">
+                    <p className="text-[11px] text-slate-400 leading-relaxed">
+                      ⚡ Use <span className="text-emerald-400 font-bold">WhatsApp</span> or <span className="text-rose-400 font-bold">Direct Email</span> to send instantly to <code className="text-cyan-300">tofikmustapha2@gmail.com</code>.
                     </p>
                   </div>
 
