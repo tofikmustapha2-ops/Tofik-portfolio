@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { ContactFormData, ServiceType } from '../types';
 import { 
   Send, Mail, MapPin, Phone, MessageSquare, CheckCircle2, 
-  AlertCircle, Sparkles, ExternalLink, Globe, HelpCircle 
+  AlertCircle, Sparkles 
 } from 'lucide-react';
 
 interface ContactSectionProps {
@@ -10,27 +10,9 @@ interface ContactSectionProps {
   onServiceNeededChange: (service: ServiceType) => void;
 }
 
-/* =========================================================================
- * EMAIL SERVICE CONFIGURATION FOR MUSTAPHA ABDUL-TOFIK / ALOLO STUDIO
- * 
- * To connect your real email inbox:
- * Option A (Formspree - Recommended):
- * 1. Go to https://formspree.io and create a free account.
- * 2. Create a new form and copy your Form Endpoint ID (e.g., 'f/xzyvqabc').
- * 3. Replace FORMSPREE_FORM_ID below with your ID.
- * 
- * Option B (EmailJS):
- * 1. Go to https://emailjs.com and create a template.
- * 2. Fill EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, EMAILJS_PUBLIC_KEY below.
- * ========================================================================= */
-const FORMSPREE_FORM_ID: string = ''; // Default Formspree Form ID e.g. "f/myformid"
-const EMAILJS_SERVICE_ID: string = ''; // Insert your EmailJS Service ID
-const EMAILJS_TEMPLATE_ID: string = ''; // Insert your EmailJS Template ID
-const EMAILJS_PUBLIC_KEY: string = ''; // Insert your EmailJS Public Key
-
 export const ContactSection: React.FC<ContactSectionProps> = ({
   selectedServiceNeeded,
-  onServiceNeededChange,
+  onServiceNeededChange: _onServiceNeededChange,
 }) => {
   const [formData, setFormData] = useState<ContactFormData>({
     fullName: '',
@@ -43,67 +25,15 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState<string>('');
 
-  // Formspree Integration State
-  const [formspreeId, setFormspreeId] = useState<string>(() => {
-    return localStorage.getItem('alolo_formspree_id') || FORMSPREE_FORM_ID || '';
-  });
-  const [savedFormspreeSuccess, setSavedFormspreeSuccess] = useState<boolean>(false);
-  const [testingFormspree, setTestingFormspree] = useState<boolean>(false);
-  const [formspreeTestMessage, setFormspreeTestMessage] = useState<string>('');
-
-  const getFormspreeEndpoint = (id: string) => {
-    let clean = id.trim();
-    if (!clean) return '';
-    if (clean.startsWith('http://') || clean.startsWith('https://')) return clean;
-    if (clean.startsWith('f/')) return `https://formspree.io/${clean}`;
-    return `https://formspree.io/f/${clean}`;
-  };
-
-  const handleSaveFormspreeId = (newId: string) => {
-    const trimmed = newId.trim();
-    setFormspreeId(trimmed);
-    localStorage.setItem('alolo_formspree_id', trimmed);
-    setSavedFormspreeSuccess(true);
-    setTimeout(() => setSavedFormspreeSuccess(false), 3000);
-  };
-
-  const handleTestFormspree = async () => {
-    const endpoint = getFormspreeEndpoint(formspreeId);
-    if (!endpoint) {
-      setFormspreeTestMessage('⚠️ Please enter your Formspree Form ID or URL first.');
-      return;
-    }
-
-    setTestingFormspree(true);
-    setFormspreeTestMessage('');
-
+  // Clear any legacy cached messages on initial mount to guarantee privacy
+  React.useEffect(() => {
     try {
-      const res = await fetch(endpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        body: JSON.stringify({
-          name: 'Mustapha Test',
-          email: 'tofikmustapha2@gmail.com',
-          service: 'Alolo Studio System Test',
-          message: 'Hello Mustapha! This is a test email from your Alolo Studio website to verify Formspree email forwarding.',
-          _subject: 'Test Notification from Alolo Studio Website',
-        }),
-      });
-
-      if (res.ok) {
-        setFormspreeTestMessage('✅ Test email sent! Check your Gmail inbox (tofikmustapha2@gmail.com).');
-      } else {
-        setFormspreeTestMessage(`⚠️ Formspree notice (${res.status}): Make sure your Form ID is activated on Formspree.io.`);
-      }
-    } catch (err: any) {
-      setFormspreeTestMessage(`❌ Test error: ${err.message || 'Failed to connect to Formspree.'}`);
-    } finally {
-      setTestingFormspree(false);
+      localStorage.removeItem('alolo_studio_messages');
+      localStorage.removeItem('alolo_formspree_id');
+    } catch (e) {
+      // Ignore
     }
-  };
+  }, []);
 
   // Synchronize when parent changes service choice
   React.useEffect(() => {
@@ -130,43 +60,30 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
     setStatus('submitting');
     setErrorMessage('');
 
-    const newMsg = {
-      id: `msg-${Date.now()}`,
-      fullName: formData.fullName,
-      email: formData.email,
-      businessName: formData.businessName || '',
-      serviceNeeded: formData.serviceNeeded,
-      message: formData.message,
-      createdAt: new Date().toISOString(),
-      status: 'unread',
-    };
-
-    // 1. Post to Formspree if endpoint is configured
-    const formspreeEndpoint = getFormspreeEndpoint(formspreeId);
-    if (formspreeEndpoint) {
-      try {
-        await fetch(formspreeEndpoint, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-          },
-          body: JSON.stringify({
-            name: formData.fullName,
-            email: formData.email,
-            business: formData.businessName || 'N/A',
-            service: formData.serviceNeeded,
-            message: formData.message,
-            _replyto: formData.email,
-            _subject: `New Alolo Studio Inquiry from ${formData.fullName}`,
-          }),
-        });
-      } catch (fErr) {
-        console.warn('Formspree POST error:', fErr);
-      }
+    // 1. Send inquiry directly to Mustapha's Gmail (tofikmustapha2@gmail.com) via FormSubmit
+    try {
+      await fetch('https://formsubmit.co/ajax/tofikmustapha2@gmail.com', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+          'Client Name': formData.fullName,
+          'Client Email': formData.email,
+          'Business Name': formData.businessName || 'Not specified',
+          'Service Requested': formData.serviceNeeded,
+          'Project Requirements / Message': formData.message,
+          _subject: `New Portfolio Inquiry: ${formData.fullName} (${formData.serviceNeeded})`,
+          _template: 'table',
+          _captcha: 'false',
+        }),
+      });
+    } catch (fsErr) {
+      console.warn('Direct email forwarding notice:', fsErr);
     }
 
-    // 2. Post to Express backend endpoint silently
+    // 2. Post to Express backend endpoint for logging
     try {
       await fetch('/api/contact', {
         method: 'POST',
@@ -177,26 +94,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
       console.warn('API contact endpoint warning:', err);
     }
 
-    // 2. Always persist message in client LocalStorage as fail-safe
-    try {
-      const existing = JSON.parse(localStorage.getItem('alolo_studio_messages') || '[]');
-      localStorage.setItem('alolo_studio_messages', JSON.stringify([newMsg, ...existing]));
-    } catch (err) {
-      console.error('LocalStorage write error:', err);
-    }
-
-    // 3. Trigger mailto redirect as direct email delivery guarantee
-    const emailSubject = `Alolo Studio Inquiry from ${formData.fullName} (${formData.serviceNeeded})`;
-    const emailBody = `Hello Mustapha,\n\nName: ${formData.fullName}\nEmail: ${formData.email}\nBusiness: ${formData.businessName || 'N/A'}\nService Needed: ${formData.serviceNeeded}\n\nProject Details:\n${formData.message}\n\nSent from Alolo Studio Website`;
-    const mailtoUrl = `mailto:tofikmustapha2@gmail.com?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
-    
-    try {
-      window.open(mailtoUrl, '_blank');
-    } catch (mErr) {
-      console.warn('Mailto open error:', mErr);
-    }
-
-    // 4. Mark submission as success unconditionally
+    // 3. Mark submission as success
     setStatus('success');
   };
 
@@ -208,110 +106,6 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
     { name: 'TikTok', url: 'https://tiktok.com/@alolostudio.gh', label: '@alolostudio.gh' },
     { name: 'LinkedIn', url: 'https://linkedin.com/in/mustapha-abdul-tofik', label: 'Mustapha Abdul-Tofik' },
   ];
-
-  // State for Viewing Received Messages Inbox
-  const [showInbox, setShowInbox] = useState<boolean>(false);
-  const [receivedMessages, setReceivedMessages] = useState<any[]>([]);
-  const [loadingMessages, setLoadingMessages] = useState<boolean>(false);
-
-  const fetchInboxMessages = async () => {
-    setLoadingMessages(true);
-    let apiMsgs: any[] = [];
-    try {
-      const res = await fetch('/api/messages');
-      const data = await res.json();
-      if (data.success && Array.isArray(data.messages)) {
-        apiMsgs = data.messages;
-      }
-    } catch (e) {
-      console.warn('API fetch inbox warning:', e);
-    }
-
-    let localMsgs: any[] = [];
-    try {
-      localMsgs = JSON.parse(localStorage.getItem('alolo_studio_messages') || '[]');
-    } catch (e) {
-      console.warn('LocalStorage read inbox warning:', e);
-    }
-
-    // Merge and deduplicate by ID or timestamp
-    const combined = [...localMsgs, ...apiMsgs];
-    const uniqueMap = new Map();
-    for (const msg of combined) {
-      if (msg && msg.id && !uniqueMap.has(msg.id)) {
-        uniqueMap.set(msg.id, msg);
-      }
-    }
-
-    const sorted = Array.from(uniqueMap.values()).sort((a: any, b: any) => 
-      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    );
-
-    setReceivedMessages(sorted);
-    setLoadingMessages(false);
-  };
-
-  const handleToggleInbox = () => {
-    if (!showInbox) {
-      fetchInboxMessages();
-    }
-    setShowInbox(!showInbox);
-  };
-
-  // Direct Send via WhatsApp function
-  const handleSendViaWhatsApp = async (e: React.MouseEvent) => {
-    e.preventDefault();
-    if (!formData.fullName.trim() || !formData.message.trim()) {
-      setStatus('error');
-      setErrorMessage('Please fill in your Name and Project Details before sending via WhatsApp.');
-      return;
-    }
-
-    const formattedMessage = `Hello Mustapha (Alolo Studio)!\n\n*Name:* ${formData.fullName}\n*Email:* ${formData.email || 'N/A'}\n*Business:* ${formData.businessName || 'N/A'}\n*Service:* ${formData.serviceNeeded}\n\n*Project Details:*\n${formData.message}`;
-    const whatsappUrl = `https://wa.me/233533580326?text=${encodeURIComponent(formattedMessage)}`;
-
-    // Save to inbox API silently in background
-    try {
-      await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
-    } catch (err) {
-      // Ignore background post error if opening WhatsApp
-    }
-
-    window.open(whatsappUrl, '_blank');
-    setStatus('success');
-  };
-
-  // Direct Send via Email Client App (Gmail, Outlook, Apple Mail)
-  const handleSendViaEmailApp = async (e: React.MouseEvent) => {
-    e.preventDefault();
-    if (!formData.fullName.trim() || !formData.email.trim() || !formData.message.trim()) {
-      setStatus('error');
-      setErrorMessage('Please fill in your Name, Email Address, and Project Details.');
-      return;
-    }
-
-    const emailSubject = `Alolo Studio Inquiry from ${formData.fullName} (${formData.serviceNeeded})`;
-    const emailBody = `Hello Mustapha,\n\nName: ${formData.fullName}\nEmail: ${formData.email}\nBusiness: ${formData.businessName || 'N/A'}\nService Needed: ${formData.serviceNeeded}\n\nProject Details:\n${formData.message}\n\nSent from Alolo Studio Website`;
-
-    const mailtoUrl = `mailto:tofikmustapha2@gmail.com?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
-
-    try {
-      await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
-    } catch (err) {
-      console.warn('API contact error:', err);
-    }
-
-    window.open(mailtoUrl, '_blank');
-    setStatus('success');
-  };
 
   return (
     <section id="contact" className="py-24 relative overflow-hidden bg-slate-950">
@@ -444,14 +238,14 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
                       Message Sent Successfully!
                     </h3>
                     <p className="text-slate-200 text-sm sm:text-base font-normal leading-relaxed">
-                      Thank you! Your project details have been sent directly to <span className="text-cyan-400 font-bold">Mustapha Abdul-Tofik</span> (<code className="text-slate-100">tofikmustapha2@gmail.com</code>).
+                      Thank you, <span className="text-white font-bold">{formData.fullName}</span>! Your project details have been sent directly to Mustapha's email (<span className="text-cyan-400 font-bold">tofikmustapha2@gmail.com</span>).
                     </p>
                   </div>
 
                   <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
                     <a
                       href={`https://wa.me/233533580326?text=${encodeURIComponent(
-                        `Hello Mustapha! I just submitted an inquiry on your website.\n\n*Name:* ${formData.fullName}\n*Service:* ${formData.serviceNeeded}\n\n*Message:* ${formData.message}`
+                        `Hello Mustapha! I just submitted an inquiry on your website.\n\n*Name:* ${formData.fullName}\n*Email:* ${formData.email}\n*Service:* ${formData.serviceNeeded}\n\n*Message:* ${formData.message}`
                       )}`}
                       target="_blank"
                       rel="noopener noreferrer"
@@ -459,6 +253,18 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
                     >
                       <MessageSquare className="w-4 h-4 fill-slate-950" />
                       <span>Chat Instantly on WhatsApp</span>
+                    </a>
+
+                    <a
+                      href={`mailto:tofikmustapha2@gmail.com?subject=${encodeURIComponent(
+                        `Project Inquiry from ${formData.fullName} - ${formData.serviceNeeded}`
+                      )}&body=${encodeURIComponent(
+                        `Hello Mustapha,\n\nName: ${formData.fullName}\nEmail: ${formData.email}\nBusiness: ${formData.businessName || 'N/A'}\nService Needed: ${formData.serviceNeeded}\n\nMessage:\n${formData.message}\n\nSent from Alolo Studio Website`
+                      )}`}
+                      className="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 font-bold text-xs flex items-center justify-center gap-2 border border-cyan-500/30 transition-colors cursor-pointer"
+                    >
+                      <Mail className="w-4 h-4" />
+                      <span>Open in Email App</span>
                     </a>
 
                     <button
@@ -474,7 +280,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
                       }}
                       className="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs transition-colors cursor-pointer"
                     >
-                      Send Another Message
+                      Send Another
                     </button>
                   </div>
                 </div>
@@ -604,98 +410,6 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
 
             </div>
 
-            {/* RECEIVED MESSAGES INBOX VIEW (For Mustapha / Studio Admin) */}
-            <div className="mt-6 pt-4 border-t border-slate-800">
-              <button
-                onClick={handleToggleInbox}
-                className="w-full py-3 px-4 rounded-2xl bg-slate-900 border border-slate-800 hover:border-cyan-500/50 text-slate-300 hover:text-white text-xs font-bold flex items-center justify-between transition-colors cursor-pointer"
-              >
-                <span className="flex items-center gap-2">
-                  <Mail className="w-4 h-4 text-cyan-400" />
-                  <span>Received Messages & Inquiries Inbox</span>
-                </span>
-                <span className="px-2.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 text-[11px] font-mono">
-                  {showInbox ? 'Close Inbox' : 'View Received Messages'}
-                </span>
-              </button>
-
-              {showInbox && (
-                <div className="mt-4 p-5 rounded-2xl bg-slate-900/90 border border-slate-800 space-y-5 animate-in fade-in duration-200">
-                  
-                  <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-                    <h4 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
-                      <span>Studio Inquiry Portal Inbox</span>
-                      <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[10px]">
-                        {receivedMessages.length} Messages
-                      </span>
-                    </h4>
-                    <button
-                      onClick={fetchInboxMessages}
-                      className="text-[11px] text-cyan-400 hover:underline cursor-pointer"
-                    >
-                      Refresh
-                    </button>
-                  </div>
-
-                  {loadingMessages ? (
-                    <div className="text-center py-6 text-xs text-slate-400">Loading messages...</div>
-                  ) : receivedMessages.length === 0 ? (
-                    <div className="text-center py-6 text-xs text-slate-400">
-                      No messages received yet. Messages submitted through the form will appear here.
-                    </div>
-                  ) : (
-                    <div className="space-y-3 max-h-80 overflow-y-auto pr-1">
-                      {receivedMessages.map((msg) => (
-                        <div
-                          key={msg.id}
-                          className="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-2 text-xs"
-                        >
-                          <div className="flex items-center justify-between gap-2">
-                            <span className="font-bold text-white text-sm">{msg.fullName}</span>
-                            <span className="text-[10px] text-slate-500">
-                              {new Date(msg.createdAt).toLocaleString()}
-                            </span>
-                          </div>
-
-                          <div className="text-slate-400 text-[11px] flex flex-wrap gap-x-3 gap-y-1">
-                            <span>📧 {msg.email}</span>
-                            {msg.businessName && <span>🏢 {msg.businessName}</span>}
-                            <span className="text-cyan-400 font-semibold">🛠️ {msg.serviceNeeded}</span>
-                          </div>
-
-                          <p className="text-slate-200 pt-1 text-xs bg-slate-900/60 p-2.5 rounded-lg border border-slate-800/60 leading-relaxed">
-                            "{msg.message}"
-                          </p>
-
-                          <div className="pt-2 flex items-center gap-2">
-                            <a
-                              href={`https://wa.me/233533580326?text=${encodeURIComponent(
-                                `Hello ${msg.fullName}, this is Mustapha from Alolo Studio replying to your inquiry about ${msg.serviceNeeded}.`
-                              )}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="px-3 py-1.5 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 font-bold text-[11px] flex items-center gap-1 transition-colors"
-                            >
-                              <MessageSquare className="w-3 h-3" />
-                              <span>Reply on WhatsApp</span>
-                            </a>
-
-                            <a
-                              href={`mailto:${msg.email}?subject=Re: Alolo Studio Inquiry - ${msg.serviceNeeded}&body=Hello ${msg.fullName},%0D%0A%0D%0AThank you for reaching out to Alolo Studio!`}
-                              className="px-3 py-1.5 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 font-bold text-[11px] flex items-center gap-1 transition-colors"
-                            >
-                              <Mail className="w-3 h-3" />
-                              <span>Reply via Email</span>
-                            </a>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-
           </div>
 
         </div>
@@ -704,3 +418,4 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
     </section>
   );
 };
+

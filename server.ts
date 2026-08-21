@@ -8,32 +8,7 @@ async function startServer() {
 
   app.use(express.json());
 
-// API Contact & Messages In-Memory Store
-interface ContactMessage {
-  id: string;
-  fullName: string;
-  email: string;
-  businessName?: string;
-  serviceNeeded: string;
-  message: string;
-  createdAt: string;
-  status: 'unread' | 'read' | 'replied';
-}
-
-const receivedMessages: ContactMessage[] = [
-  {
-    id: 'msg-1',
-    fullName: 'Sample Client',
-    email: 'client@example.com',
-    businessName: 'Tamale Tech Hub',
-    serviceNeeded: 'Business Website Design',
-    message: 'Hello Mustapha! I need a modern website for our business in Tamale. Please contact me on WhatsApp.',
-    createdAt: new Date(Date.now() - 3600000).toISOString(),
-    status: 'unread',
-  }
-];
-
-// API Contact Route for Handling Inquiries
+// API Contact Route for Handling Inquiries Securely
 app.post("/api/contact", (req, res) => {
   const { fullName, email, businessName, serviceNeeded, message } = req.body;
 
@@ -43,19 +18,6 @@ app.post("/api/contact", (req, res) => {
       message: "Please fill in all required fields (Name, Email, Service Needed, and Message).",
     });
   }
-
-  const newMessage: ContactMessage = {
-    id: `msg-${Date.now()}`,
-    fullName,
-    email,
-    businessName,
-    serviceNeeded,
-    message,
-    createdAt: new Date().toISOString(),
-    status: 'unread',
-  };
-
-  receivedMessages.unshift(newMessage);
 
   console.log("==========================================");
   console.log("NEW PORTFOLIO INQUIRY RECEIVED FOR ALOLO STUDIO:");
@@ -67,16 +29,7 @@ app.post("/api/contact", (req, res) => {
 
   return res.status(200).json({
     success: true,
-    message: "Thank you! Your message has been sent successfully. I’ll get back to you soon.",
-    messageData: newMessage,
-  });
-});
-
-// GET all received messages for Inbox
-app.get("/api/messages", (req, res) => {
-  return res.json({
-    success: true,
-    messages: receivedMessages,
+    message: "Thank you! Your message has been received.",
   });
 });
 
